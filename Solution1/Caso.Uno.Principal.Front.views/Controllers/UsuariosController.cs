@@ -24,7 +24,7 @@ namespace Caso.Uno.Principal.Front.views.Controllers
         public ApplicationRoleManager RoleManager =>
             _roleManager ?? (_roleManager = HttpContext.GetOwinContext().Get<ApplicationRoleManager>());
 
-        public ActionResult Index(string buscar)
+        public async Task<ActionResult> Index(string buscar)
         {
             var usuarios = UserManager.Users.AsQueryable();
 
@@ -35,27 +35,30 @@ namespace Caso.Uno.Principal.Front.views.Controllers
                     u.NombreCompleto.Contains(buscar));
             }
 
-            var lista = usuarios
-                .OrderBy(u => u.Email)
-                .ToList()
-                .Select(u => new UsuarioListaViewModel
+            var lista = new System.Collections.Generic.List<UsuarioListaViewModel>();
+
+            foreach (var usuario in usuarios.OrderBy(u => u.Email).ToList())
+            {
+                var roles = await UserManager.GetRolesAsync(usuario.Id);
+
+                lista.Add(new UsuarioListaViewModel
                 {
-                    Id = u.Id,
-                    NombreCompleto = u.NombreCompleto,
-                    Email = u.Email,
-                    Bloqueado = u.LockoutEndDateUtc.HasValue && u.LockoutEndDateUtc.Value > DateTime.UtcNow,
-                    Roles = UserManager.GetRoles(u.Id).ToList()
-                })
-                .ToList();
+                    Id = usuario.Id,
+                    NombreCompleto = usuario.NombreCompleto,
+                    Email = usuario.Email,
+                    Bloqueado = usuario.LockoutEndDateUtc.HasValue && usuario.LockoutEndDateUtc.Value > DateTime.UtcNow,
+                    Roles = roles.ToList()
+                });
+            }
 
             return View(lista);
         }
 
-        public ActionResult EditarRoles(string id)
+        public async Task<ActionResult> EditarRoles(string id)
         {
             if (string.IsNullOrEmpty(id)) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            var usuario = UserManager.FindById(id);
+            var usuario = await UserManager.FindByIdAsync(id);
             if (usuario == null) return HttpNotFound();
 
             var modelo = new EditarRolesViewModel
@@ -64,7 +67,7 @@ namespace Caso.Uno.Principal.Front.views.Controllers
                 NombreCompleto = usuario.NombreCompleto,
                 Email = usuario.Email,
                 TodosLosRoles = RoleManager.Roles.Select(r => r.Name).OrderBy(r => r).ToList(),
-                RolesSeleccionados = UserManager.GetRoles(usuario.Id).ToList()
+                RolesSeleccionados = (await UserManager.GetRolesAsync(usuario.Id)).ToList()
             };
 
             return View(modelo);
@@ -74,13 +77,16 @@ namespace Caso.Uno.Principal.Front.views.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> EditarRoles(string usuarioId, System.Collections.Generic.List<string> rolesSeleccionados)
         {
-            var usuario = UserManager.FindById(usuarioId);
+            var usuario = await UserManager.FindByIdAsync(usuarioId);
             if (usuario == null) return HttpNotFound();
 
             var rolesActuales = await UserManager.GetRolesAsync(usuarioId);
             rolesSeleccionados = rolesSeleccionados ?? new System.Collections.Generic.List<string>();
 
-            await UserManager.RemoveFromRolesAsync(usuarioId, rolesActuales.ToArray());
+            if (rolesActuales.Any())
+            {
+                await UserManager.RemoveFromRolesAsync(usuarioId, rolesActuales.ToArray());
+            }
 
             if (rolesSeleccionados.Any())
             {
@@ -93,21 +99,21 @@ namespace Caso.Uno.Principal.Front.views.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AlternarBloqueo(string id)
+        public async Task<ActionResult> AlternarBloqueo(string id)
         {
-            var usuario = UserManager.FindById(id);
+            var usuario = await UserManager.FindByIdAsync(id);
             if (usuario == null) return HttpNotFound();
 
             var bloqueadoActualmente = usuario.LockoutEndDateUtc.HasValue && usuario.LockoutEndDateUtc.Value > DateTime.UtcNow;
 
             if (bloqueadoActualmente)
             {
-                UserManager.SetLockoutEndDate(id, DateTimeOffset.UtcNow);
+                await UserManager.SetLockoutEndDateAsync(id, DateTimeOffset.UtcNow);
                 TempData["MensajeExito"] = "Usuario desbloqueado.";
             }
             else
             {
-                UserManager.SetLockoutEndDate(id, DateTimeOffset.UtcNow.AddYears(100));
+                await UserManager.SetLockoutEndDateAsync(id, DateTimeOffset.UtcNow.AddYears(100));
                 TempData["MensajeExito"] = "Usuario bloqueado.";
             }
 
@@ -116,9 +122,9 @@ namespace Caso.Uno.Principal.Front.views.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(string id)
+        public async Task<ActionResult> DeleteConfirmed(string id)
         {
-            var usuario = UserManager.FindById(id);
+            var usuario = await UserManager.FindByIdAsync(id);
             if (usuario == null) return HttpNotFound();
 
             if (usuario.UserName == User.Identity.Name)
@@ -127,7 +133,7 @@ namespace Caso.Uno.Principal.Front.views.Controllers
                 return RedirectToAction("Index");
             }
 
-            UserManager.Delete(usuario);
+            await UserManager.DeleteAsync(usuario);
             TempData["MensajeExito"] = "Usuario eliminado correctamente.";
             return RedirectToAction("Index");
         }

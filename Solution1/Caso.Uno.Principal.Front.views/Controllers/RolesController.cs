@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Caso.Uno.Principal.Front.views.Datos;
@@ -21,18 +22,24 @@ namespace Caso.Uno.Principal.Front.views.Controllers
         public ApplicationUserManager UserManager =>
             _userManager ?? (_userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>());
 
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            var roles = RoleManager.Roles
-                .OrderBy(r => r.Name)
-                .ToList()
-                .Select(r => new RolListaViewModel
+            var usuarios = UserManager.Users.ToList();
+            var roles = new System.Collections.Generic.List<RolListaViewModel>();
+
+            foreach (var rol in RoleManager.Roles.OrderBy(r => r.Name).ToList())
+            {
+                var total = 0;
+                foreach (var usuario in usuarios)
                 {
-                    Id = r.Id,
-                    Name = r.Name,
-                    TotalUsuarios = UserManager.Users.ToList().Count(u => UserManager.IsInRole(u.Id, r.Name))
-                })
-                .ToList();
+                    if (await UserManager.IsInRoleAsync(usuario.Id, rol.Name))
+                    {
+                        total++;
+                    }
+                }
+
+                roles.Add(new RolListaViewModel { Id = rol.Id, Name = rol.Name, TotalUsuarios = total });
+            }
 
             return View(roles);
         }
@@ -45,7 +52,7 @@ namespace Caso.Uno.Principal.Front.views.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(string nombre)
+        public async Task<ActionResult> Create(string nombre)
         {
             if (string.IsNullOrWhiteSpace(nombre))
             {
@@ -53,32 +60,34 @@ namespace Caso.Uno.Principal.Front.views.Controllers
                 return View();
             }
 
-            if (RoleManager.RoleExists(nombre))
+            if (await RoleManager.RoleExistsAsync(nombre))
             {
                 ModelState.AddModelError("", "Ya existe un rol con ese nombre.");
                 return View();
             }
 
-            RoleManager.Create(new IdentityRole(nombre));
+            await RoleManager.CreateAsync(new IdentityRole(nombre));
             TempData["MensajeExito"] = "Rol creado correctamente.";
             return RedirectToAction("Index");
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(string id)
+        public async Task<ActionResult> DeleteConfirmed(string id)
         {
-            var rol = RoleManager.FindById(id);
+            var rol = await RoleManager.FindByIdAsync(id);
             if (rol == null) return HttpNotFound();
 
-            var tieneUsuarios = UserManager.Users.ToList().Any(u => UserManager.IsInRole(u.Id, rol.Name));
-            if (tieneUsuarios)
+            foreach (var usuario in UserManager.Users.ToList())
             {
-                TempData["MensajeError"] = "No se puede eliminar: hay usuarios con este rol asignado.";
-                return RedirectToAction("Index");
+                if (await UserManager.IsInRoleAsync(usuario.Id, rol.Name))
+                {
+                    TempData["MensajeError"] = "No se puede eliminar: hay usuarios con este rol asignado.";
+                    return RedirectToAction("Index");
+                }
             }
 
-            RoleManager.Delete(rol);
+            await RoleManager.DeleteAsync(rol);
             TempData["MensajeExito"] = "Rol eliminado correctamente.";
             return RedirectToAction("Index");
         }
