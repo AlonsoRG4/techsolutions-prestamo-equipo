@@ -28,9 +28,6 @@
     </dl>
 </div>
 <div class="mt-3">
-    @if (User.IsInRole("Administrador"))
-    {
-        @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-outline-secondary" })
-    }
+    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-outline-secondary" })
     @Html.ActionLink("Regresar", "Index", null, new { @class = "btn btn-outline-secondary" })
 </div>

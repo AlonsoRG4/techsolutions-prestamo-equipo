@@ -65,7 +65,6 @@ namespace Caso.Uno.Principal.Front.views.Controllers
             return View(prestamo);
         }
 
-        [Authorize(Roles = "Administrador")]
         public ActionResult Edit(int? id)
         {
             if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -76,7 +75,6 @@ namespace Caso.Uno.Principal.Front.views.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrador")]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,EquipoId,EmpleadoId,FechaPrestamo,FechaEntrega")] Prestamo prestamo)
         {

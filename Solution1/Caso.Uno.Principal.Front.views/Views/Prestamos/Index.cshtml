@@ -37,9 +37,9 @@
                     </td>
                     <td class="text-nowrap">
                         @Html.ActionLink("Ver", "Details", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
+                        @Html.ActionLink("Editar", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
                         @if (User.IsInRole("Administrador"))
                         {
-                            @Html.ActionLink("Editar", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
                             @Html.ActionLink("Eliminar", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
                         }
                     </td>
