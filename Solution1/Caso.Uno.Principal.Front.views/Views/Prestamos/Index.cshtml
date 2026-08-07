@@ -1,0 +1,47 @@
+@model IEnumerable<Caso.Uno.Principal.Front.views.Modelos.Prestamo>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Préstamos";
+}
+
+<div class="ts-page-header">
+    <div>
+        <h2>Préstamos</h2>
+        <span class="ts-underline"></span>
+    </div>
+    @Html.ActionLink("+ Nuevo Préstamo", "Create", null, new { @class = "btn btn-primary-ts" })
+</div>
+
+<div class="ts-table-wrap">
+    <table class="ts-datatable table table-hover align-middle w-100">
+        <thead>
+            <tr>
+                <th>Equipo</th>
+                <th>Empleado</th>
+                <th>Fecha de Préstamo</th>
+                <th>Fecha de Entrega</th>
+                <th>Estatus</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Equipo.Nombre</td>
+                    <td>@item.Empleado.Nombre</td>
+                    <td>@item.FechaPrestamo.ToString("dd/MM/yyyy")</td>
+                    <td>@(item.FechaEntrega?.ToString("dd/MM/yyyy") ?? "—")</td>
+                    <td>
+                        <span class="badge @(item.Estatus == "Prestado" ? "badge-prestado" : "badge-devuelto")">@item.Estatus</span>
+                    </td>
+                    <td class="text-nowrap">
+                        @Html.ActionLink("Ver", "Details", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
+                        @Html.ActionLink("Editar", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
+                        @Html.ActionLink("Eliminar", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger btn-sm" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

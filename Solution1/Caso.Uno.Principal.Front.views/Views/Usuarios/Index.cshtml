@@ -1,0 +1,65 @@
+@model List<Caso.Uno.Principal.Front.views.ViewModels.UsuarioListaViewModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Usuarios";
+}
+
+<div class="ts-page-header">
+    <div>
+        <h2>Usuarios</h2>
+        <span class="ts-underline"></span>
+    </div>
+    @Html.ActionLink("+ Nuevo Usuario", "Register", "Account", null, new { @class = "btn btn-primary-ts" })
+</div>
+
+<div class="ts-table-wrap">
+    <table class="ts-datatable table table-hover align-middle w-100">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Roles</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.NombreCompleto</td>
+                    <td>@item.Email</td>
+                    <td>
+                        @foreach (var rol in item.Roles)
+                        {
+                            <span class="badge badge-prestado me-1">@rol</span>
+                        }
+                    </td>
+                    <td>
+                        @if (item.Bloqueado)
+                        {
+                            <span class="badge bg-danger">Bloqueado</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-disponible">Activo</span>
+                        }
+                    </td>
+                    <td class="text-nowrap">
+                        @Html.ActionLink("Roles", "EditarRoles", new { id = item.Id }, new { @class = "btn btn-outline-secondary btn-sm" })
+                        @using (Html.BeginForm("AlternarBloqueo", "Usuarios", new { id = item.Id }, FormMethod.Post, new { style = "display:inline" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-outline-secondary btn-sm">@(item.Bloqueado ? "Desbloquear" : "Bloquear")</button>
+                        }
+                        @using (Html.BeginForm("Delete", "Usuarios", new { id = item.Id }, FormMethod.Post, new { style = "display:inline", data_confirmar = "¿Eliminar este usuario?" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

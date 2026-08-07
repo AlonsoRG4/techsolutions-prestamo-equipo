@@ -1,0 +1,47 @@
+@model Caso.Uno.Principal.Front.views.Modelos.Prestamo
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Editar Préstamo";
+}
+
+<div class="ts-page-header">
+    <div>
+        <h2>Editar Préstamo</h2>
+        <span class="ts-underline"></span>
+    </div>
+</div>
+
+<div class="ts-card p-4" style="max-width:640px;">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Id)
+        <div class="ts-form">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="mb-3">
+                <label class="form-label">Equipo</label>
+                @Html.DropDownList("EquipoId", (SelectList)ViewBag.EquipoId, new { @class = "form-control" })
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Empleado</label>
+                @Html.DropDownList("EmpleadoId", (SelectList)ViewBag.EmpleadoId, new { @class = "form-control" })
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    @Html.LabelFor(m => m.FechaPrestamo, new { @class = "form-label" })
+                    @Html.EditorFor(m => m.FechaPrestamo, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="col-md-6 mb-3">
+                    @Html.LabelFor(m => m.FechaEntrega, new { @class = "form-label" })
+                    @Html.EditorFor(m => m.FechaEntrega, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+
+            <p class="text-muted small"><i class="bi bi-info-circle"></i> El estatus (Prestado/Devuelto) se administra desde la pantalla de detalle con el botón "Registrar Devolución".</p>
+
+            <button type="submit" class="btn btn-primary-ts"><i class="bi bi-save"></i> Guardar</button>
+            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-outline-secondary" })
+        </div>
+    }
+</div>

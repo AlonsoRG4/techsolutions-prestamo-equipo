@@ -1,0 +1,25 @@
+@model Caso.Uno.Principal.Front.views.Modelos.Equipo
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Detalles del Equipo";
+}
+
+<div class="ts-page-header">
+    <div>
+        <h2>@Model.Nombre</h2>
+        <span class="ts-underline"></span>
+    </div>
+</div>
+
+<div class="ts-card p-4" style="max-width:560px;">
+    <dl class="ts-dl row mb-0">
+        <div class="col-md-6"><dt>@Html.DisplayNameFor(m => m.Marca)</dt><dd>@Model.Marca</dd></div>
+        <div class="col-md-6"><dt>@Html.DisplayNameFor(m => m.Modelo)</dt><dd>@Model.Modelo</dd></div>
+        <div class="col-md-6"><dt>@Html.DisplayNameFor(m => m.Serie)</dt><dd>@Model.Serie</dd></div>
+        <div class="col-md-6"><dt>@Html.DisplayNameFor(m => m.Estado)</dt><dd>@Model.Estado</dd></div>
+    </dl>
+</div>
+<div class="mt-3">
+    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary-ts" })
+    @Html.ActionLink("Regresar", "Index", null, new { @class = "btn btn-outline-secondary" })
+</div>

@@ -1,0 +1,41 @@
+@model List<Caso.Uno.Principal.Front.views.ViewModels.RolListaViewModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Roles";
+}
+
+<div class="ts-page-header">
+    <div>
+        <h2>Roles</h2>
+        <span class="ts-underline"></span>
+    </div>
+    @Html.ActionLink("+ Nuevo Rol", "Create", null, new { @class = "btn btn-primary-ts" })
+</div>
+
+<div class="ts-table-wrap">
+    <table class="table table-hover align-middle w-100">
+        <thead>
+            <tr>
+                <th>Rol</th>
+                <th>Usuarios Asignados</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.TotalUsuarios</td>
+                    <td>
+                        @using (Html.BeginForm("Delete", "Roles", new { id = item.Id }, FormMethod.Post, new { style = "display:inline", data_confirmar = "¿Eliminar este rol?" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i> Eliminar</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,36 @@
+@model Caso.Uno.Principal.Front.views.ViewModels.EditarRolesViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Editar Roles";
+}
+
+<div class="ts-page-header">
+    <div>
+        <h2>Roles de @Model.NombreCompleto</h2>
+        <span class="ts-underline"></span>
+    </div>
+</div>
+
+<div class="ts-card p-4" style="max-width:560px;">
+    <p class="text-muted">@Model.Email</p>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("usuarioId", Model.UsuarioId)
+        <div class="ts-form">
+            <label class="form-label">Roles Asignados</label>
+            <div class="d-flex flex-column gap-2 p-3" style="background:#f8fafc;border-radius:8px;">
+                @foreach (var rol in Model.TodosLosRoles)
+                {
+                    var marcado = Model.RolesSeleccionados.Contains(rol) ? "checked" : null;
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" name="rolesSeleccionados" value="@rol" id="rol_@rol" @Html.Raw(marcado) />
+                        <label class="form-check-label" for="rol_@rol">@rol</label>
+                    </div>
+                }
+            </div>
+            <button type="submit" class="btn btn-primary-ts mt-3"><i class="bi bi-save"></i> Guardar</button>
+            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-outline-secondary mt-3" })
+        </div>
+    }
+</div>

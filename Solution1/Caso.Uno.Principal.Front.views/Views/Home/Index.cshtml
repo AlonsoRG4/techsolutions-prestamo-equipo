@@ -1,0 +1,93 @@
+@model Caso.Uno.Principal.Front.views.ViewModels.PanelInicioViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Dashboard";
+}
+
+<div class="ts-page-header">
+    <div>
+        <h2>Dashboard</h2>
+        <span class="ts-underline"></span>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4 col-sm-6">
+        <div class="ts-stat-card">
+            <div class="ts-stat-icon"><i class="bi bi-pc-display"></i></div>
+            <div>
+                <div class="ts-stat-valor">@Model.TotalEquipos</div>
+                <div class="ts-stat-label">Equipos Registrados</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-6">
+        <div class="ts-stat-card">
+            <div class="ts-stat-icon"><i class="bi bi-check-circle-fill"></i></div>
+            <div>
+                <div class="ts-stat-valor">@Model.EquiposDisponibles</div>
+                <div class="ts-stat-label">Equipos Disponibles</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-6">
+        <div class="ts-stat-card">
+            <div class="ts-stat-icon"><i class="bi bi-box-arrow-right"></i></div>
+            <div>
+                <div class="ts-stat-valor">@Model.EquiposPrestados</div>
+                <div class="ts-stat-label">Equipos Prestados</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-6">
+        <div class="ts-stat-card">
+            <div class="ts-stat-icon"><i class="bi bi-people-fill"></i></div>
+            <div>
+                <div class="ts-stat-valor">@Model.TotalEmpleados</div>
+                <div class="ts-stat-label">Empleados Registrados</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-6">
+        <div class="ts-stat-card">
+            <div class="ts-stat-icon"><i class="bi bi-hourglass-split"></i></div>
+            <div>
+                <div class="ts-stat-valor">@Model.PrestamosActivos</div>
+                <div class="ts-stat-label">Préstamos Activos</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-6">
+        <div class="ts-stat-card">
+            <div class="ts-stat-icon"><i class="bi bi-flag-fill"></i></div>
+            <div>
+                <div class="ts-stat-valor">@Model.PrestamosDevueltos</div>
+                <div class="ts-stat-label">Préstamos Devueltos</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mt-1">
+    <div class="col-md-4">
+        <div class="ts-card p-4 h-100">
+            <h5 style="color:var(--ts-azul-2);">Equipos</h5>
+            <p class="text-muted small">Administra el catálogo de equipo tecnológico y su estado.</p>
+            @Html.ActionLink("Ir a Equipos →", "Index", "Equipos", null, new { @class = "btn btn-primary-ts btn-sm" })
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="ts-card p-4 h-100">
+            <h5 style="color:var(--ts-azul-2);">Empleados</h5>
+            <p class="text-muted small">Consulta y administra los datos de los empleados.</p>
+            @Html.ActionLink("Ir a Empleados →", "Index", "Empleados", null, new { @class = "btn btn-primary-ts btn-sm" })
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="ts-card p-4 h-100">
+            <h5 style="color:var(--ts-azul-2);">Préstamos</h5>
+            <p class="text-muted small">Registra préstamos, controla devoluciones y su estatus.</p>
+            @Html.ActionLink("Ir a Préstamos →", "Index", "Prestamos", null, new { @class = "btn btn-primary-ts btn-sm" })
+        </div>
+    </div>
+</div>

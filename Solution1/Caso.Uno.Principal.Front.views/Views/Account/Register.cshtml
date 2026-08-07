@@ -1,0 +1,52 @@
+@model Caso.Uno.Principal.Front.views.ViewModels.RegisterViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Nuevo Usuario";
+    var roles = (List<string>)ViewBag.Roles;
+}
+
+<div class="ts-page-header">
+    <div>
+        <h2>Nuevo Usuario</h2>
+        <span class="ts-underline"></span>
+    </div>
+</div>
+
+<div class="ts-card p-4" style="max-width:560px;">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="ts-form">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="mb-3">
+                @Html.LabelFor(m => m.NombreCompleto, new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.NombreCompleto, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.NombreCompleto, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    @Html.LabelFor(m => m.Password, new { @class = "form-label" })
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-6 mb-3">
+                    @Html.LabelFor(m => m.ConfirmPassword, new { @class = "form-label" })
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="mb-3">
+                @Html.LabelFor(m => m.Rol, new { @class = "form-label" })
+                @Html.DropDownListFor(m => m.Rol, new SelectList(roles), "-- Selecciona un rol --", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Rol, "", new { @class = "text-danger" })
+            </div>
+            <button type="submit" class="btn btn-primary-ts"><i class="bi bi-person-plus-fill"></i> Crear Usuario</button>
+            @Html.ActionLink("Cancelar", "Index", "Usuarios", null, new { @class = "btn btn-outline-secondary" })
+        </div>
+    }
+</div>

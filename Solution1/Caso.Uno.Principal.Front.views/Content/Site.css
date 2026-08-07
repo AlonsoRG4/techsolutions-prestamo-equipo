@@ -1,0 +1,180 @@
+/* ==========================================================================
+   TechSolutions S.A. — Sistema de Préstamo de Equipo Tecnológico
+   Tema profesional corporativo (sidebar azul marino + contenido claro)
+   ========================================================================== */
+
+:root {
+    --ts-azul: #123a63;
+    --ts-azul-2: #0d2c4d;
+    --ts-azul-claro: #1f5c9e;
+    --ts-acento: #2e9cca;
+    --ts-fondo: #f4f6f9;
+    --ts-borde: #dee3ea;
+    --ts-texto: #23272b;
+    --ts-texto-muted: #6c7684;
+    --ts-exito: #1e8e5a;
+    --ts-peligro: #c0392b;
+    --ts-sidebar-ancho: 260px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+    background-color: var(--ts-fondo);
+    color: var(--ts-texto);
+    font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Arial, sans-serif;
+    min-height: 100%;
+}
+
+a { color: var(--ts-azul-claro); text-decoration: none; }
+a:hover { color: var(--ts-acento); }
+
+/* ---- Layout con sidebar ---- */
+
+.ts-app { display: flex; min-height: 100vh; }
+
+.ts-sidebar {
+    width: var(--ts-sidebar-ancho);
+    min-width: var(--ts-sidebar-ancho);
+    background: linear-gradient(180deg, var(--ts-azul) 0%, var(--ts-azul-2) 100%);
+    color: #fff;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    transition: margin-left .25s ease;
+    z-index: 1030;
+}
+
+.ts-sidebar .ts-brand {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: 1.3rem 1.2rem;
+    border-bottom: 1px solid rgba(255,255,255,.15);
+}
+
+.ts-sidebar .ts-brand .ts-brand-icon {
+    width: 40px; height: 40px; border-radius: 8px;
+    background: var(--ts-acento);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 1.1rem;
+}
+
+.ts-sidebar .ts-brand h1 { font-size: 1.05rem; margin: 0; color: #fff; }
+.ts-sidebar .ts-brand small { display: block; font-size: .68rem; color: rgba(255,255,255,.65); text-transform: uppercase; letter-spacing: 1px; }
+
+.ts-sidebar .nav-link {
+    color: rgba(255,255,255,.85);
+    padding: .7rem 1.3rem;
+    font-size: .92rem;
+    display: flex; align-items: center; gap: .7rem;
+    border-left: 3px solid transparent;
+}
+
+.ts-sidebar .nav-link:hover { background: rgba(255,255,255,.08); color: #fff; }
+.ts-sidebar .nav-link.active { background: rgba(255,255,255,.14); color: #fff; border-left-color: var(--ts-acento); font-weight: 600; }
+.ts-sidebar .ts-nav-section { text-transform: uppercase; font-size: .66rem; letter-spacing: 1.5px; color: rgba(255,255,255,.5); padding: 1rem 1.3rem .3rem; }
+
+.ts-content { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+.ts-topbar {
+    height: 60px;
+    background: #fff;
+    border-bottom: 1px solid var(--ts-borde);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem;
+    position: sticky; top: 0; z-index: 1020;
+}
+
+.ts-topbar .ts-toggle { background: transparent; border: 1px solid var(--ts-borde); border-radius: 6px; padding: .3rem .6rem; }
+.ts-topbar .ts-usuario { display: flex; align-items: center; gap: .6rem; }
+.ts-topbar .avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--ts-azul); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-weight: 700;
+}
+
+.ts-main { padding: 1.75rem; flex: 1; }
+
+.ts-footer {
+    background: #fff;
+    border-top: 1px solid var(--ts-borde);
+    color: var(--ts-texto-muted);
+    padding: 1rem 1.75rem;
+    font-size: .82rem;
+}
+
+@media (max-width: 991.98px) {
+    .ts-sidebar { position: fixed; margin-left: calc(-1 * var(--ts-sidebar-ancho)); }
+    .ts-sidebar.ts-abierto { margin-left: 0; }
+}
+
+/* ---- Encabezado de página ---- */
+
+.ts-page-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+.ts-page-header h2 { margin: 0; color: var(--ts-azul-2); font-weight: 700; }
+.ts-page-header .ts-underline { display: inline-block; width: 48px; height: 3px; background: var(--ts-acento); margin-top: .3rem; }
+
+/* ---- Cards ---- */
+
+.ts-card { background: #fff; border: 1px solid var(--ts-borde); border-radius: 10px; box-shadow: 0 2px 10px rgba(20,40,70,.06); }
+.ts-card .card-header { background: #fff; border-bottom: 1px solid var(--ts-borde); font-weight: 600; color: var(--ts-azul-2); }
+
+.ts-stat-card {
+    background: #fff; border: 1px solid var(--ts-borde); border-left: 4px solid var(--ts-acento);
+    border-radius: 10px; padding: 1.2rem 1.4rem;
+    display: flex; align-items: center; gap: 1rem;
+    box-shadow: 0 2px 10px rgba(20,40,70,.06);
+    height: 100%;
+}
+
+.ts-stat-card .ts-stat-icon {
+    width: 50px; height: 50px; border-radius: 10px;
+    background: rgba(46,156,202,.12); color: var(--ts-acento);
+    display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0;
+}
+
+.ts-stat-card .ts-stat-valor { font-size: 1.7rem; font-weight: 700; color: var(--ts-azul-2); line-height: 1; }
+.ts-stat-card .ts-stat-label { color: var(--ts-texto-muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .5px; }
+
+/* ---- Tablas ---- */
+
+.ts-table-wrap { background: #fff; border: 1px solid var(--ts-borde); border-radius: 10px; padding: 1.1rem; }
+
+table.dataTable thead th { color: var(--ts-azul-2); border-bottom: 2px solid var(--ts-borde) !important; text-transform: uppercase; font-size: .74rem; letter-spacing: .5px; }
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select { border: 1px solid var(--ts-borde); border-radius: 6px; padding: .25rem .5rem; }
+.dataTables_wrapper .dataTables_paginate .paginate_button.current { background: var(--ts-azul) !important; color: #fff !important; border-color: var(--ts-azul) !important; }
+
+/* ---- Badges de estado ---- */
+
+.badge-disponible { background: var(--ts-exito); color: #fff; }
+.badge-prestado { background: var(--ts-acento); color: #fff; }
+.badge-mantenimiento { background: #6c757d; color: #fff; }
+.badge-devuelto { background: var(--ts-exito); color: #fff; }
+
+/* ---- Formularios ---- */
+
+.ts-form .form-label { font-weight: 600; font-size: .85rem; color: var(--ts-texto); }
+.ts-dl dt { color: var(--ts-texto-muted); text-transform: uppercase; font-size: .72rem; letter-spacing: .5px; margin-top: .9rem; }
+.ts-dl dd { font-size: 1.02rem; }
+
+/* ---- Auth ---- */
+
+.ts-auth-page {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--ts-azul) 0%, var(--ts-azul-2) 100%);
+    padding: 2rem 1rem;
+}
+
+.ts-auth-card {
+    width: 100%; max-width: 420px; background: #fff; border-radius: 14px;
+    box-shadow: 0 20px 50px rgba(0,0,0,.25); padding: 2.2rem;
+}
+
+.ts-auth-card h1 { font-size: 1.5rem; color: var(--ts-azul-2); font-weight: 700; }
+.ts-auth-card .ts-subtitle { color: var(--ts-texto-muted); font-size: .85rem; margin-bottom: 1.4rem; }
+
+.btn-primary-ts { background: var(--ts-azul); border-color: var(--ts-azul); color: #fff; font-weight: 600; }
+.btn-primary-ts:hover { background: var(--ts-azul-claro); border-color: var(--ts-azul-claro); color: #fff; }

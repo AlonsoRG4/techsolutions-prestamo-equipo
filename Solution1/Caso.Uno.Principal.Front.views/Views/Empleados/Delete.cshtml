@@ -1,0 +1,27 @@
+@model Caso.Uno.Principal.Front.views.Modelos.Empleado
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Eliminar Empleado";
+}
+
+<div class="ts-page-header">
+    <div>
+        <h2>¿Eliminar este empleado?</h2>
+        <span class="ts-underline"></span>
+    </div>
+</div>
+
+<div class="ts-card p-4" style="max-width:560px;">
+    <dl class="ts-dl row mb-0">
+        <div class="col-md-6"><dt>Nombre</dt><dd>@Model.Nombre</dd></div>
+        <div class="col-md-6"><dt>Departamento</dt><dd>@Model.Departamento</dd></div>
+        <div class="col-md-6"><dt>Correo</dt><dd>@Model.Correo</dd></div>
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Eliminar</button>
+        @Html.ActionLink("Regresar", "Index", null, new { @class = "btn btn-outline-secondary" })
+    }
+</div>
