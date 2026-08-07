@@ -11,7 +11,6 @@ using Microsoft.Owin.Security;
 
 namespace Caso.Uno.Principal.Front.views.Controllers
 {
-    /// <summary>Inicio/cierre de sesión con ASP.NET Identity y alta de usuarios (solo Administrador).</summary>
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;
@@ -110,7 +109,21 @@ namespace Caso.Uno.Principal.Front.views.Controllers
 
             if (resultado.Succeeded)
             {
-                await UserManager.AddToRoleAsync(usuario.Id, modelo.Rol);
+                var resultadoRol = await UserManager.AddToRoleAsync(usuario.Id, modelo.Rol);
+
+                if (!resultadoRol.Succeeded)
+                {
+                    // El usuario ya se creó pero se quedó sin rol: sin rol no puede
+                    // entrar a ningún módulo (se vería como un "bucle" de login).
+                    // Se revierte la creación para no dejar cuentas huérfanas.
+                    await UserManager.DeleteAsync(usuario);
+                    foreach (var error in resultadoRol.Errors)
+                    {
+                        ModelState.AddModelError("", "No se pudo asignar el rol: " + error);
+                    }
+                    return View(modelo);
+                }
+
                 TempData["MensajeExito"] = $"Usuario {modelo.Email} creado correctamente con el rol {modelo.Rol}.";
                 return RedirectToAction("Index", "Usuarios");
             }
