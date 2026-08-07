@@ -27,6 +27,10 @@ namespace Caso.Uno.Principal.Front.views.Controllers
         public ApplicationUserManager UserManager =>
             _userManager ?? (_userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>());
 
+        // GET: Roles/Index
+        // Para cada uno de los 2 roles, cuenta cuántos usuarios lo tienen
+        // asignado (recorriendo todos los usuarios y preguntando IsInRoleAsync).
+        // Es de solo lectura: no hay Create/Delete de roles en este controlador.
         public async Task<ActionResult> Index()
         {
             var usuarios = UserManager.Users.ToList();

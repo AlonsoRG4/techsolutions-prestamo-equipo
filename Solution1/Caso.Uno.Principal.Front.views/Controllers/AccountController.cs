@@ -11,6 +11,16 @@ using Microsoft.Owin.Security;
 
 namespace Caso.Uno.Principal.Front.views.Controllers
 {
+    // ============================================================================
+    // AccountController
+    // ----------------------------------------------------------------------------
+    // Controlador de autenticación del sistema, basado en ASP.NET Identity.
+    // Se encarga de: iniciar sesión (Login), cerrar sesión (LogOff) y crear
+    // nuevos usuarios asignándoles un rol (Register, solo para Administrador).
+    // No tiene CRUD propio: usa los "managers" de Identity (UserManager,
+    // SignInManager, RoleManager) que trabajan sobre las tablas AspNetUsers,
+    // AspNetRoles y AspNetUserRoles creadas por el script SQL.
+    // ============================================================================
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;
@@ -28,6 +38,9 @@ namespace Caso.Uno.Principal.Front.views.Controllers
 
         private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
 
+        // GET: Account/Login
+        // Muestra el formulario de inicio de sesión. [AllowAnonymous] porque
+        // cualquiera (sin haber iniciado sesión) debe poder ver esta pantalla.
         [HttpGet]
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
@@ -36,6 +49,10 @@ namespace Caso.Uno.Principal.Front.views.Controllers
             return View(new LoginViewModel());
         }
 
+        // POST: Account/Login
+        // Valida usuario/contraseña contra AspNetUsers (PasswordSignInAsync) y,
+        // si son correctos, crea la cookie de autenticación. Si venía de una
+        // página protegida (returnUrl), regresa ahí; si no, va al Dashboard.
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -70,6 +87,8 @@ namespace Caso.Uno.Principal.Front.views.Controllers
             }
         }
 
+        // POST: Account/LogOff
+        // Cierra la sesión actual (borra la cookie de autenticación de Identity).
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
@@ -78,6 +97,9 @@ namespace Caso.Uno.Principal.Front.views.Controllers
             return RedirectToAction("Login", "Account");
         }
 
+        // GET: Account/Register
+        // Formulario para crear un usuario nuevo. Solo lo puede abrir un
+        // Administrador (los usuarios no se auto-registran en este sistema).
         [HttpGet]
         [Authorize(Roles = "Administrador")]
         public ActionResult Register()
@@ -86,6 +108,11 @@ namespace Caso.Uno.Principal.Front.views.Controllers
             return View(new RegisterViewModel());
         }
 
+        // POST: Account/Register
+        // Crea el usuario en AspNetUsers (CreateAsync) y le asigna el rol elegido
+        // (AddToRoleAsync). Si la asignación de rol falla, se borra el usuario
+        // recién creado para no dejar una cuenta "sin rol" que nunca podría
+        // entrar a ningún módulo del sistema.
         [HttpPost]
         [Authorize(Roles = "Administrador")]
         [ValidateAntiForgeryToken]

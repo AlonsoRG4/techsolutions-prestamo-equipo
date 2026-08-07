@@ -1,19 +1,3 @@
-﻿/* ============================================================================
-   TECHSOLUTIONS S.A. - Sistema de Préstamo de Equipo Tecnológico
-   Script de creación de base de datos - SQL Server
-   ============================================================================
-   Incluye:
-     1) Tablas estándar de ASP.NET Identity 2.x (AspNetUsers, AspNetRoles,
-        AspNetUserRoles, AspNetUserClaims, AspNetUserLogins).
-     2) Tablas propias del sistema: Equipos, Empleados, Prestamos.
-     3) Datos semilla: roles Administrador/Operador y un usuario administrador.
-
-   Ejecutar completo en SQL Server Management Studio, o pegar en el editor de
-   consultas del panel de tu hosting (Somee / MonsterASP.NET) apuntando a la
-   base de datos ya creada para tu cuenta.
-
-   Usuario semilla: admin@techsolutions.com   |   Contraseña: Admin123!
-   ============================================================================ */
 
 IF NOT EXISTS (SELECT 1 FROM sys.databases WHERE name = N'TechSolutionsDB')
 BEGIN
@@ -24,9 +8,7 @@ GO
 USE TechSolutionsDB;
 GO
 
-/* ----------------------------------------------------------------------------
-   Limpieza (si el script se vuelve a ejecutar sobre una BD existente)
-   ---------------------------------------------------------------------------- */
+
 IF OBJECT_ID('dbo.Prestamos', 'U') IS NOT NULL DROP TABLE dbo.Prestamos;
 IF OBJECT_ID('dbo.Empleados', 'U') IS NOT NULL DROP TABLE dbo.Empleados;
 IF OBJECT_ID('dbo.Equipos', 'U') IS NOT NULL DROP TABLE dbo.Equipos;
@@ -37,9 +19,6 @@ IF OBJECT_ID('dbo.AspNetUsers', 'U') IS NOT NULL DROP TABLE dbo.AspNetUsers;
 IF OBJECT_ID('dbo.AspNetRoles', 'U') IS NOT NULL DROP TABLE dbo.AspNetRoles;
 GO
 
-/* ============================================================================
-   TABLAS DE ASP.NET IDENTITY (esquema estándar Microsoft.AspNet.Identity 2.x)
-   ============================================================================ */
 
 CREATE TABLE dbo.AspNetRoles
 (
@@ -110,9 +89,6 @@ GO
 CREATE INDEX IX_AspNetUserLogins_UserId ON dbo.AspNetUserLogins (UserId);
 GO
 
-/* ============================================================================
-   TABLAS DEL SISTEMA
-   ============================================================================ */
 
 CREATE TABLE dbo.Equipos
 (
@@ -159,20 +135,12 @@ CREATE INDEX IX_Prestamos_EquipoId ON dbo.Prestamos (EquipoId);
 CREATE INDEX IX_Prestamos_EmpleadoId ON dbo.Prestamos (EmpleadoId);
 GO
 
-/* ============================================================================
-   DATOS SEMILLA
-   ============================================================================ */
 
 INSERT INTO dbo.AspNetRoles (Id, Name) VALUES
 (N'ca505699-85c4-4fb8-8c45-aeb205e8b4ed', N'Administrador'),
 (N'ced1cfdb-07c5-4e76-ab74-eb549bac69cf', N'Operador');
 GO
 
--- Usuario administrador inicial.
--- Correo/Usuario: admin@techsolutions.com   |   Contraseña: Admin123!
--- El PasswordHash fue generado con el mismo algoritmo que usa
--- Microsoft.AspNet.Identity.Core 2.x (PBKDF2-HMACSHA1, 1000 iteraciones,
--- salt de 16 bytes, subkey de 32 bytes, con el byte de formato 0x00 al inicio).
 INSERT INTO dbo.AspNetUsers
 (Id, Email, EmailConfirmed, PasswordHash, SecurityStamp, PhoneNumberConfirmed, TwoFactorEnabled, LockoutEnabled, AccessFailedCount, UserName, NombreCompleto)
 VALUES
@@ -186,7 +154,6 @@ INSERT INTO dbo.AspNetUserRoles (UserId, RoleId) VALUES
 (N'd2ef63ed-c099-4922-81ce-ba47b3c8f6d1', N'ca505699-85c4-4fb8-8c45-aeb205e8b4ed');
 GO
 
--- Datos de ejemplo (opcional, cómodo para probar el CRUD de inmediato).
 INSERT INTO dbo.Equipos (Nombre, Marca, Modelo, Serie, Estado) VALUES
 (N'Laptop Dell Latitude', N'Dell', N'Latitude 5440', N'DL5440-0001', N'Disponible'),
 (N'Laptop HP EliteBook', N'HP', N'EliteBook 840', N'HP840-0002', N'Disponible'),

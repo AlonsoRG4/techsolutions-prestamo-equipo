@@ -12,6 +12,18 @@ using Microsoft.Owin;
 
 namespace Caso.Uno.Principal.Front.views.Controllers
 {
+    // ============================================================================
+    // UsuariosController
+    // ----------------------------------------------------------------------------
+    // Administración de las CUENTAS del sistema (tabla AspNetUsers), no confundir
+    // con Empleados (que es un catálogo de negocio, no gente que inicia sesión).
+    // Solo Administrador. Desde aquí se puede: ver todos los usuarios y sus
+    // roles, cambiar los roles de un usuario, bloquear/desbloquear el acceso, y
+    // eliminar una cuenta (menos la propia, para no auto-bloquearse el sistema).
+    // Todos los métodos son async porque Microsoft.AspNet.Identity.Core no
+    // expone versiones síncronas de estas operaciones (FindById, Delete,
+    // GetRoles, etc. solo existen como FindByIdAsync, DeleteAsync, GetRolesAsync...).
+    // ============================================================================
     [Authorize(Roles = "Administrador")]
     public class UsuariosController : Controller
     {
@@ -24,6 +36,8 @@ namespace Caso.Uno.Principal.Front.views.Controllers
         public ApplicationRoleManager RoleManager =>
             _roleManager ?? (_roleManager = HttpContext.GetOwinContext().Get<ApplicationRoleManager>());
 
+        // GET: Usuarios/Index?buscar=texto
+        // Lista todos los usuarios con sus roles actuales y si están bloqueados.
         public async Task<ActionResult> Index(string buscar)
         {
             var usuarios = UserManager.Users.AsQueryable();
@@ -54,6 +68,9 @@ namespace Caso.Uno.Principal.Front.views.Controllers
             return View(lista);
         }
 
+        // GET: Usuarios/EditarRoles/idDelUsuario
+        // Muestra los 2 roles fijos (Administrador/Operador) con checkboxes,
+        // marcando los que el usuario ya tiene asignados.
         public async Task<ActionResult> EditarRoles(string id)
         {
             if (string.IsNullOrEmpty(id)) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -73,6 +90,12 @@ namespace Caso.Uno.Principal.Front.views.Controllers
             return View(modelo);
         }
 
+        // POST: Usuarios/EditarRoles
+        // Quita todos los roles actuales y vuelve a asignar solo los que
+        // llegaron marcados desde el formulario (rolesSeleccionados).
+        // IMPORTANTE: el rol se "congela" en la cookie de sesión al iniciar
+        // sesión, así que el usuario debe volver a iniciar sesión para que
+        // el cambio de rol le tome efecto.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> EditarRoles(string usuarioId, System.Collections.Generic.List<string> rolesSeleccionados)
@@ -97,6 +120,10 @@ namespace Caso.Uno.Principal.Front.views.Controllers
             return RedirectToAction("Index");
         }
 
+        // POST: Usuarios/AlternarBloqueo/idDelUsuario
+        // Bloquea o desbloquea el acceso del usuario poniendo (o quitando) una
+        // fecha de bloqueo muy lejana en LockoutEndDateUtc. Un usuario bloqueado
+        // no puede iniciar sesión aunque su contraseña sea correcta.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AlternarBloqueo(string id)
@@ -120,6 +147,9 @@ namespace Caso.Uno.Principal.Front.views.Controllers
             return RedirectToAction("Index");
         }
 
+        // POST: Usuarios/Delete/idDelUsuario
+        // Elimina la cuenta, salvo que sea la cuenta con la que se está
+        // conectado en este momento (para no quedarse sin acceso al sistema).
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(string id)

@@ -8,6 +8,19 @@ using Caso.Uno.Principal.Front.views.Servicios;
 
 namespace Caso.Uno.Principal.Front.views.Controllers
 {
+    // ============================================================================
+    // PrestamosController
+    // ----------------------------------------------------------------------------
+    // Controla el proceso de préstamo/devolución de equipo: relaciona un Equipo
+    // con un Empleado (llaves foráneas EquipoId/EmpleadoId en la tabla Prestamos).
+    // Es el único módulo que ven AMBOS roles, pero con permisos distintos:
+    //   - Administrador: puede ver, crear, editar, devolver y ELIMINAR.
+    //   - Operador:      puede ver, crear, editar y devolver, pero NO eliminar
+    //                     (por eso Delete/DeleteConfirmed tienen su propio
+    //                     [Authorize(Roles = "Administrador")] adicional).
+    // La lógica de negocio (que no se pueda prestar un equipo ya prestado, que
+    // al devolver se libere el equipo, etc.) vive en PrestamoServicio, no aquí.
+    // ============================================================================
     [Authorize(Roles = "Administrador,Operador")]
     public class PrestamosController : Controller
     {
@@ -23,12 +36,16 @@ namespace Caso.Uno.Principal.Front.views.Controllers
             _servicio = new PrestamoServicio(new PrestamoRepositorio(db), _equipoRepositorio);
         }
 
+        // GET: Prestamos/Index?buscar=texto
+        // Lista los préstamos (con el Equipo y Empleado ya incluidos, ver
+        // PrestamoRepositorio.BuscarConDetalles) y filtra si viene "buscar".
         public ActionResult Index(string buscar)
         {
             ViewBag.Buscar = buscar;
             return View(_servicio.Buscar(buscar));
         }
 
+        // GET: Prestamos/Details/5 — detalle del préstamo con botón "Devolver".
         public ActionResult Details(int? id)
         {
             if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -37,12 +54,17 @@ namespace Caso.Uno.Principal.Front.views.Controllers
             return View(prestamo);
         }
 
+        // GET: Prestamos/Create — formulario para registrar un préstamo nuevo.
+        // Los combos de Equipo solo muestran equipos con Estado = "Disponible".
         public ActionResult Create()
         {
             CargarListasParaCrear();
             return View(new Prestamo { FechaPrestamo = DateTime.Now });
         }
 
+        // POST: Prestamos/Create
+        // PrestamoServicio.RegistrarPrestamo valida que el equipo no esté ya
+        // prestado y, si todo está bien, marca el Equipo como "Prestado".
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,EquipoId,EmpleadoId,FechaPrestamo,FechaEntrega")] Prestamo prestamo)
@@ -65,6 +87,7 @@ namespace Caso.Uno.Principal.Front.views.Controllers
             return View(prestamo);
         }
 
+        // GET: Prestamos/Edit/5 — formulario de edición (Administrador y Operador).
         public ActionResult Edit(int? id)
         {
             if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -95,6 +118,10 @@ namespace Caso.Uno.Principal.Front.views.Controllers
             return View(prestamo);
         }
 
+        // POST: Prestamos/Devolver/5
+        // Marca el préstamo como "Devuelto" (con fecha de entrega = ahora) y
+        // libera el equipo (vuelve a Estado = "Disponible"). Disponible para
+        // Administrador y Operador: es la acción principal del día a día.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Devolver(int id)
@@ -112,6 +139,8 @@ namespace Caso.Uno.Principal.Front.views.Controllers
             return RedirectToAction("Details", new { id });
         }
 
+        // GET: Prestamos/Delete/5 — solo Administrador (rol extra sobre la
+        // clase, que ya de por sí permite Administrador y Operador).
         [Authorize(Roles = "Administrador")]
         public ActionResult Delete(int? id)
         {
