@@ -69,20 +69,23 @@
 </div>
 
 <div class="row g-3 mt-1">
-    <div class="col-md-4">
-        <div class="ts-card p-4 h-100">
-            <h5 style="color:var(--ts-azul-2);">Equipos</h5>
-            <p class="text-muted small">Administra el catálogo de equipo tecnológico y su estado.</p>
-            @Html.ActionLink("Ir a Equipos →", "Index", "Equipos", null, new { @class = "btn btn-primary-ts btn-sm" })
+    @if (User.IsInRole("Administrador"))
+    {
+        <div class="col-md-4">
+            <div class="ts-card p-4 h-100">
+                <h5 style="color:var(--ts-azul-2);">Equipos</h5>
+                <p class="text-muted small">Administra el catálogo de equipo tecnológico y su estado.</p>
+                @Html.ActionLink("Ir a Equipos →", "Index", "Equipos", null, new { @class = "btn btn-primary-ts btn-sm" })
+            </div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="ts-card p-4 h-100">
-            <h5 style="color:var(--ts-azul-2);">Empleados</h5>
-            <p class="text-muted small">Consulta y administra los datos de los empleados.</p>
-            @Html.ActionLink("Ir a Empleados →", "Index", "Empleados", null, new { @class = "btn btn-primary-ts btn-sm" })
+        <div class="col-md-4">
+            <div class="ts-card p-4 h-100">
+                <h5 style="color:var(--ts-azul-2);">Empleados</h5>
+                <p class="text-muted small">Consulta y administra los datos de los empleados.</p>
+                @Html.ActionLink("Ir a Empleados →", "Index", "Empleados", null, new { @class = "btn btn-primary-ts btn-sm" })
+            </div>
         </div>
-    </div>
+    }
     <div class="col-md-4">
         <div class="ts-card p-4 h-100">
             <h5 style="color:var(--ts-azul-2);">Préstamos</h5>

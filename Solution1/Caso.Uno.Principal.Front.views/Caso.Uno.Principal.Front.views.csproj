@@ -240,7 +240,6 @@
     <Content Include="Views\Usuarios\Index.cshtml" />
     <Content Include="Views\Usuarios\EditarRoles.cshtml" />
     <Content Include="Views\Roles\Index.cshtml" />
-    <Content Include="Views\Roles\Create.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

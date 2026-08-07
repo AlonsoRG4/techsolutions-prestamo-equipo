@@ -9,7 +9,7 @@ using Caso.Uno.Principal.Front.views.Servicios;
 
 namespace Caso.Uno.Principal.Front.views.Controllers
 {
-    [Authorize(Roles = "Administrador,Operador")]
+    [Authorize(Roles = "Administrador")]
     public class EquiposController : Controller
     {
         private readonly ApplicationDbContext db = new ApplicationDbContext();

@@ -30,12 +30,15 @@
                 </a>
 
                 <div class="ts-nav-section">Operación</div>
-                <a class="nav-link @(controladorActual == "Equipos" ? "active" : "")" href="@Url.Action("Index", "Equipos")">
-                    <i class="bi bi-pc-display"></i> Equipos
-                </a>
-                <a class="nav-link @(controladorActual == "Empleados" ? "active" : "")" href="@Url.Action("Index", "Empleados")">
-                    <i class="bi bi-people-fill"></i> Empleados
-                </a>
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a class="nav-link @(controladorActual == "Equipos" ? "active" : "")" href="@Url.Action("Index", "Equipos")">
+                        <i class="bi bi-pc-display"></i> Equipos
+                    </a>
+                    <a class="nav-link @(controladorActual == "Empleados" ? "active" : "")" href="@Url.Action("Index", "Empleados")">
+                        <i class="bi bi-people-fill"></i> Empleados
+                    </a>
+                }
                 <a class="nav-link @(controladorActual == "Prestamos" ? "active" : "")" href="@Url.Action("Index", "Prestamos")">
                     <i class="bi bi-arrow-left-right"></i> Préstamos
                 </a>
